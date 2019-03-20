@@ -17,20 +17,20 @@ function getTeamInfo(req, res) {
         if (err) {
             return res.json({
                 speech: 'Something went wrong!',
-                displayText: 'Something went wrong!',
+                fulfillmentText: 'Something went wrong!',
                 source: 'team info'
             });
         }
         if (teamExists) {
             return res.json({
                 speech: teamExists.description,
-                displayText: teamExists.description,
+                fulfillmentText: teamExists.description,
                 source: 'team info'
             });
         } else {
             return res.json({
                 speech: 'Currently I am not having information about this team',
-                displayText: 'Currently I am not having information about this team',
+                fulfillmentText: 'Currently I am not having information about this team',
                 source: 'team info'
             });
         }
@@ -48,7 +48,7 @@ function getTeamSchedule(req, res) {
                 if (err) {
                     return res.json({
                         speech: 'Something went wrong!',
-                        displayText: 'Something went wrong!',
+                        fulfillmentText: 'Something went wrong!',
                         source: 'game schedule'
                     });
                 }
@@ -64,14 +64,14 @@ function getTeamSchedule(req, res) {
                             }
                             return res.json({
                                 speech: 'Last game between Kings and ' + parameters.team + ' was played on ' + game.date + ' .' + winningStatement,
-                                displayText: 'Last game between Kings and ' + parameters.team + ' was played on ' + game.date + ' .' + winningStatement,
+                                fulfillmentText: 'Last game between Kings and ' + parameters.team + ' was played on ' + game.date + ' .' + winningStatement,
                                 source: 'game schedule'
                             });
                             //break;
                         } else {
                             return res.json({
                                 speech: 'Cant find any previous game played between Kings and ' + parameters.team,
-                                displayText: 'Cant find any previous game played between Kings and ' + parameters.team,
+                                fulfillmentText: 'Cant find any previous game played between Kings and ' + parameters.team,
                                 source: 'game schedule'
                             });
                         }
@@ -82,14 +82,14 @@ function getTeamSchedule(req, res) {
         } else {
             return res.json({
                 speech: 'Next game schedules will be available soon',
-                displayText: 'Next game schedules will be available soon',
+                fulfillmentText: 'Next game schedules will be available soon',
                 source: 'game schedule'
             });
         }
     } else {
         return res.json({
             speech: 'Cant handle the queries with two teams now. I will update myself',
-            displayText: 'Cant handle the queries with two teams now. I will update myself',
+            fulfillmentText: 'Cant handle the queries with two teams now. I will update myself',
             source: 'game schedule'
         });
     }

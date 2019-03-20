@@ -6,7 +6,7 @@ var GameSchedule = mongoose.model('GameSchedule');
 exports.processRequest = function(req, res) {
     if (req.body.queryResult.action == "schedule") {
         getTeamSchedule(req, res)
-    } else if (req.body.queryResult.action == "tell.about") {
+    } else if (req.body.queryResult.action == "team-info") {
         getTeamInfo(req, res)
     }
 };

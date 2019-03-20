@@ -20,6 +20,10 @@ var GameSchedule = new Schema({
     score: {
         type: String,
         required: false
+    },
+    home: {
+        type: String,
+        required: false
     }
 });
 module.exports = mongoose.model('GameSchedule', GameSchedule);

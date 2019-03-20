@@ -39,7 +39,7 @@ function getTeamInfo(req, res) {
 
 function getTeamSchedule(req, res) {
     let parameters = req.body.queryResult.parameters;
-    if (parameters.equipo != "") {
+    if (parameters.team1 == "") {
         let game_occurence = parameters.game_occurence;
         let team = parameters.team;
         if (game_occurence == "previous") {
@@ -53,43 +53,30 @@ function getTeamSchedule(req, res) {
                     });
                 }
                 if (games) {
-                    var requiredGame;
                     for (var i = 0; i < games.length; i++) {
-                        if (games.home == parameters.equipo) {
-                            var game = games[i];
-                            var convertedCurrentDate = new Date();
-                            var convertedGameDate = new Date(game.date);
-                            if (convertedGameDate > convertedCurrentDate) {
-                                if (games.length > 1) {
-                                    requiredGame = games[i - 1];
-                                    var winningStatement = "";
-                                    if (requiredGame.isWinner) {
-                                        winningStatement = parameters.equipo + " won this match by " + requiredGame.score;
-                                    } else {
-                                        winningStatement = parameters.equipo + " lost this match by " + requiredGame.score;
-                                    }
-                                    return res.json({
-                                        speech: 'Last game between' + parameters.equipo + ' and ' + parameters.team + ' was played on ' + requiredGame.date + ' .' + winningStatement,
-                                        displayText: 'Last game between' + parameters.equipo + ' and ' + parameters.team + ' was played on ' + requiredGame.date + ' .' + winningStatement,
-                                        source: 'game schedule'
-                                    });
-                                    break;
-                                } else {
-                                    return res.json({
-                                        speech: 'Cant find any previous game played between ' + parameters.equipo + ' and ' + parameters.team,
-                                        displayText: 'Cant find any previous game played between ' + parameters.equipo + ' and ' + parameters.team,
-                                        source: 'game schedule'
-                                    });
-                                }
+                        var game = games[i];
+                        if (game.home == parameters.equipo) {
+                            var winningStatement = "";
+                            if (game.isWinner) {
+                                winningStatement = "Kings won this match by " + game.score;
                             } else {
-                                return res.json({
-                                    speech: 'Cant find any previous game played between ' + parameters.equipo + ' and ' + parameters.team,
-                                    displayText: 'Cant find any previous game played between ' + parameters.equipo + ' and ' + parameters.team,
-                                    source: 'game schedule'
-                                });
+                                winningStatement = "Kings lost this match by " + game.score;
                             }
+                            return res.json({
+                                speech: 'Last game between Kings and ' + parameters.team + ' was played on ' + game.date + ' .' + winningStatement,
+                                displayText: 'Last game between Kings and ' + parameters.team + ' was played on ' + game.date + ' .' + winningStatement,
+                                source: 'game schedule'
+                            });
+                            //break;
+                        } else {
+                            return res.json({
+                                speech: 'Cant find any previous game played between Kings and ' + parameters.team,
+                                displayText: 'Cant find any previous game played between Kings and ' + parameters.team,
+                                source: 'game schedule'
+                            });
                         }
                     }
+
                 }
             });
         } else {

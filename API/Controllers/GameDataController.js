@@ -23,11 +23,7 @@ function getTeamInfo(req, res) {
         }
         if (teamExists) {
             return res.json({
-                fulfillmentMessages: [{
-                    speech: teamExists.description,
-                    displayText: teamExists.description,
-                    source: 'team info'
-                }]
+                fulfillmentText: teamExists.description
             });
         } else {
             return res.json({

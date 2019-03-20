@@ -16,9 +16,7 @@ function getTeamInfo(req, res) {
     TeamInfo.findOne({ name: teamToSearch }, function(err, teamExists) {
         if (err) {
             return res.json({
-                speech: 'Something went wrong!',
-                displayText: 'Something went wrong!',
-                source: 'team info'
+                fulfillmentText: 'Something went wrong!'
             });
         }
         if (teamExists) {
@@ -27,9 +25,7 @@ function getTeamInfo(req, res) {
             });
         } else {
             return res.json({
-                speech: 'Currently I am not having information about this team',
-                displayText: 'Currently I am not having information about this team',
-                source: 'team info'
+                fulfillmentText: 'Currently I am not having information about this team'
             });
         }
     });
@@ -37,58 +33,82 @@ function getTeamInfo(req, res) {
 
 function getTeamSchedule(req, res) {
     let parameters = req.body.queryResult.parameters;
-    if (parameters.team1 == "") {
+    if (parameters.equipo != "") {
         let game_occurence = parameters.game_occurence;
         let team = parameters.team;
-        if (game_occurence == "previous") {
+        if (game_occurence == "anterior") {
             //previous game
             GameSchedule.find({ opponent: team }, function(err, games) {
                 if (err) {
                     return res.json({
-                        speech: 'Something went wrong!',
-                        displayText: 'Something went wrong!',
-                        source: 'game schedule'
+                        fulfillmentText: 'Something went wrong!'
                     });
                 }
-                if (games) {
+                if (games.length > 0) {
                     for (var i = 0; i < games.length; i++) {
                         var game = games[i];
                         if (game.home == parameters.equipo) {
                             var winningStatement = "";
                             if (game.isWinner) {
-                                winningStatement = "Kings won this match by " + game.score;
+                                winningStatement = parameters.equipo + " ganaron el partido por " + game.score;
                             } else {
-                                winningStatement = "Kings lost this match by " + game.score;
+                                winningStatement = parameters.equipo + " perdieron el partido por " + game.score;
                             }
                             return res.json({
-                                speech: 'Last game between Kings and ' + parameters.team + ' was played on ' + game.date + ' .' + winningStatement,
-                                displayText: 'Last game between Kings and ' + parameters.team + ' was played on ' + game.date + ' .' + winningStatement,
-                                source: 'game schedule'
+                                fulfillmentText: 'El último partido entre ' + parameters.equipo + ' y ' + parameters.team + ' se jugó el ' + game.date + ' .' + winningStatement
                             });
                             //break;
                         } else {
+                            var textoRespuesta = "El último partido que disputaron los " + parameters.team;
+                            var winningStatement = "";
+                            if (game.isWinner) {
+                                winningStatement = " ganaron el partido por " + game.score + " contra los " + game.opponent;
+                            } else {
+                                winningStatement = " perdieron el partido por " + game.score + " contra los " + game.opponent;
+                            }
+
                             return res.json({
-                                speech: 'Cant find any previous game played between Kings and ' + parameters.team,
-                                displayText: 'Cant find any previous game played between Kings and ' + parameters.team,
-                                source: 'game schedule'
+                                fulfillmentText: textoRespuesta + winningStatement + ' y se jugó el ' + game.date
                             });
                         }
                     }
 
+                } else {
+                    GameSchedule.find({ home: team }, function(err, games) {
+                        if (err) {
+                            return res.json({
+                                fulfillmentText: 'Something went wrong!'
+                            });
+                        }
+                        if (games) {
+                            for (var i = 0; i < games.length; i++) {
+                                var game = games[i];
+
+                                var textoRespuesta = "El último partido que disputaron los " + parameters.team;
+                                var winningStatement = "";
+                                if (game.isWinner) {
+                                    winningStatement = " ganaron el partido por " + game.score + " contra los " + game.opponent;
+                                } else {
+                                    winningStatement = " perdieron el partido por " + game.score + " contra los " + game.opponent;
+                                }
+
+                                return res.json({
+                                    fulfillmentText: textoRespuesta + winningStatement + ' y se jugó el ' + game.date
+                                });
+                            }
+
+                        }
+                    });
                 }
             });
         } else {
             return res.json({
-                speech: 'Next game schedules will be available soon',
-                displayText: 'Next game schedules will be available soon',
-                source: 'game schedule'
+                fulfillmentText: 'Los póximos partidos estarán disponibles pronto'
             });
         }
     } else {
         return res.json({
-            speech: 'Cant handle the queries with two teams now. I will update myself',
-            displayText: 'Cant handle the queries with two teams now. I will update myself',
-            source: 'game schedule'
+            fulfillmentText: 'No puedo manejar esta petición pero la tendré en cuenta'
         });
     }
 }

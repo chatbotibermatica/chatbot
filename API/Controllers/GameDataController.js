@@ -23,15 +23,11 @@ function getTeamInfo(req, res) {
         }
         if (teamExists) {
             return res.json({
-                "fulfillmentMessages": [{
-                    "platform": "ACTIONS_ON_GOOGLE",
-                    "simpleResponses": {
-                        "simpleResponses": [{
-                            "displayText": "Sorry, something went wrong",
-                            "ssml": "<speak>Sorry, Something went wrong <break time=\"200ms\"/> Please try again later</speak>"
-                        }]
-                    }
-                }]
+                fulfillmentMessages: {
+                    speech: teamExists.description,
+                    displayText: teamExists.description,
+                    source: 'team info'
+                }
             });
         } else {
             return res.json({
